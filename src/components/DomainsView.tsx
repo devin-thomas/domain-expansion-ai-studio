@@ -291,8 +291,154 @@ export const DomainsView: React.FC<DomainsViewProps> = ({
         </div>
       </div>
 
+      {/* Mobile record cards keep the full domain workflow available without horizontal scrolling. */}
+      <div id="mobile-domain-list" className="space-y-3 lg:hidden">
+        {filteredDomains.length === 0 ? (
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-12 text-center text-xs text-zinc-500">
+            No matching domains found.
+          </div>
+        ) : (
+          filteredDomains.map((domain) => {
+            const days = getDaysUntil(domain.renewalDate);
+            const urgency = getRenewalUrgency(days);
+            const isLetExpire = domain.renewalIntention === 'Let expire';
+            const mobileDomainId = domain.name.replace(/[^a-z0-9]/g, '-');
+
+            return (
+              <article
+                key={domain.id}
+                id={`mobile-domain-card-${mobileDomainId}`}
+                className={`overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm ${
+                  isLetExpire ? 'opacity-75 bg-zinc-950/30' : ''
+                }`}
+              >
+                <div className="flex min-w-0 items-start justify-between gap-3 p-3">
+                  <div className="min-w-0 flex-1">
+                    <button
+                      type="button"
+                      onClick={() => onSelectDomain(domain)}
+                      className={`block min-w-0 max-w-full break-all text-left text-sm font-semibold text-zinc-100 transition hover:text-indigo-400 ${
+                        isLetExpire ? 'line-through text-zinc-400' : ''
+                      }`}
+                    >
+                      {domain.name}
+                    </button>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                      <span
+                        className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                          urgency.level === 'critical' || urgency.level === 'overdue'
+                            ? 'border border-rose-800/40 bg-rose-950/50 text-rose-300'
+                            : urgency.level === 'soon'
+                            ? 'border border-amber-800/40 bg-amber-950/50 text-amber-300'
+                            : 'bg-zinc-800 text-zinc-400'
+                        }`}
+                      >
+                        {urgency.label}
+                      </span>
+                      {domain.autoRenew && (
+                        <span className="rounded border border-emerald-900/30 bg-emerald-950/30 px-1.5 py-0.5 text-[10px] text-emerald-400/90">
+                          Auto-renew
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    className={`shrink-0 rounded px-2 py-1 text-[10px] font-medium ${
+                      domain.status === 'Active'
+                        ? 'border border-emerald-900/40 bg-emerald-950/40 text-emerald-300'
+                        : domain.status === 'Inactive'
+                        ? 'bg-zinc-800 text-zinc-400'
+                        : 'border border-amber-900/40 bg-amber-950/40 text-amber-300'
+                    }`}
+                  >
+                    {domain.status}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-zinc-800/80 px-3 py-3 text-xs">
+                  <div className="min-w-0">
+                    <span className="block text-[10px] uppercase tracking-wider text-zinc-500">Registrar</span>
+                    <span className="mt-0.5 block break-words text-zinc-200">{domain.registrar || '—'}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <span className="block text-[10px] uppercase tracking-wider text-zinc-500">Renewal</span>
+                    <span className="mt-0.5 block break-words font-mono text-zinc-200">
+                      {formatDate(domain.renewalDate)}
+                    </span>
+                  </div>
+                  <div className="min-w-0">
+                    <span className="block text-[10px] uppercase tracking-wider text-zinc-500">Cost</span>
+                    <span className="mt-0.5 block break-words font-mono font-medium text-zinc-200">
+                      {formatCurrency(domain.cost, domain.currency)}
+                    </span>
+                  </div>
+                  <div className="min-w-0">
+                    <span className="block text-[10px] uppercase tracking-wider text-zinc-500">Ownership</span>
+                    <span className="mt-0.5 block break-words text-zinc-200">{domain.ownership}</span>
+                  </div>
+                  <div className="col-span-2 min-w-0">
+                    <span className="block text-[10px] uppercase tracking-wider text-zinc-500">Renewal intention</span>
+                    <button
+                      type="button"
+                      onClick={() => onToggleIntention(domain)}
+                      title="Click to toggle renewal intention"
+                      className={`mt-1 min-h-8 rounded border px-2 py-1 text-xs font-medium transition ${
+                        isLetExpire
+                          ? 'border-rose-900/60 bg-rose-950/40 text-rose-300 hover:bg-rose-900/50'
+                          : 'border-zinc-700 bg-zinc-800 text-zinc-300 hover:border-zinc-600'
+                      }`}
+                    >
+                      {domain.renewalIntention}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 border-t border-zinc-800/80 p-3">
+                  <button
+                    id={`mobile-btn-calendar-${mobileDomainId}`}
+                    type="button"
+                    onClick={() => onOpenCalendarModal(domain)}
+                    className="flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-2 py-2 text-xs font-medium text-zinc-200 transition hover:bg-zinc-700"
+                  >
+                    <CalendarPlus className="h-3.5 w-3.5 text-indigo-400" />
+                    Calendar
+                  </button>
+                  <button
+                    id={`mobile-btn-tasks-${mobileDomainId}`}
+                    type="button"
+                    onClick={() => onOpenTasksModal(domain)}
+                    className="flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-2 py-2 text-xs font-medium text-zinc-200 transition hover:bg-zinc-700"
+                  >
+                    <ListTodo className="h-3.5 w-3.5 text-emerald-400" />
+                    Task
+                  </button>
+                  <button
+                    id={`mobile-btn-edit-${mobileDomainId}`}
+                    type="button"
+                    onClick={() => onEditDomain(domain)}
+                    className="flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-2 py-2 text-xs font-medium text-zinc-200 transition hover:bg-zinc-700"
+                  >
+                    <Edit2 className="h-3.5 w-3.5" />
+                    Edit
+                  </button>
+                  <button
+                    id={`mobile-btn-delete-${mobileDomainId}`}
+                    type="button"
+                    onClick={() => onDeleteDomain(domain)}
+                    className="flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-rose-900/60 bg-rose-950/30 px-2 py-2 text-xs font-medium text-rose-300 transition hover:bg-rose-900/50"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Delete
+                  </button>
+                </div>
+              </article>
+            );
+          })
+        )}
+      </div>
+
       {/* Main Dense Table */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 overflow-x-auto shadow-sm">
+      <div className="hidden overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm lg:block">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-zinc-800 bg-zinc-950/60 text-zinc-400 uppercase tracking-wider text-[10px]">

@@ -250,8 +250,8 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
 
             {/* Drive Backup Action */}
             <div className="rounded-lg border border-zinc-800 bg-zinc-950/60 p-3.5 space-y-2">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
                   <div className="text-xs font-medium text-zinc-200">Back up to Google Drive</div>
                   <div className="text-[11px] text-zinc-400">
                     Creates a timestamped snapshot file in your personal Drive
@@ -261,7 +261,7 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
                   id="btn-backup-drive"
                   onClick={handleDriveBackup}
                   disabled={driveBackupLoading}
-                  className="flex items-center gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-700 transition disabled:opacity-50"
+                  className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-md bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-200 transition hover:bg-zinc-700 disabled:opacity-50 sm:w-auto sm:py-1.5"
                 >
                   {driveBackupLoading ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -288,8 +288,8 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
 
             {/* Sheets Export Action */}
             <div className="rounded-lg border border-zinc-800 bg-zinc-950/60 p-3.5 space-y-2">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
                   <div className="text-xs font-medium text-zinc-200">Export to Google Sheets</div>
                   <div className="text-[11px] text-zinc-400">
                     Generates a formatted Google Spreadsheet with domain columns
@@ -299,7 +299,7 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
                   id="btn-export-sheets"
                   onClick={handleSheetsExport}
                   disabled={sheetsLoading}
-                  className="flex items-center gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-700 transition disabled:opacity-50"
+                  className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-md bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-200 transition hover:bg-zinc-700 disabled:opacity-50 sm:w-auto sm:py-1.5"
                 >
                   {sheetsLoading ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -311,7 +311,7 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
               </div>
 
               {sheetsSuccessUrl && (
-                <div className="flex items-center justify-between gap-2 text-xs text-emerald-400 pt-1">
+                <div className="flex flex-col items-start gap-2 pt-1 text-xs text-emerald-400 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
                     <span>Spreadsheet created!</span>
@@ -353,7 +353,7 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
             <label className="block text-xs font-medium text-zinc-300 mb-1.5">
               Conflict Resolution Strategy:
             </label>
-            <div className="grid grid-cols-3 gap-2 text-xs">
+            <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-3">
               <label
                 className={`flex flex-col p-2.5 rounded-lg border cursor-pointer transition ${
                   conflictStrategy === 'skip'
@@ -361,7 +361,7 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
                     : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'
                 }`}
               >
-                <div className="flex items-center gap-1.5">
+                <div className="flex min-w-0 items-center gap-1.5">
                   <input
                     type="radio"
                     name="conflict"
@@ -384,7 +384,7 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
                     : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'
                 }`}
               >
-                <div className="flex items-center gap-1.5">
+                <div className="flex min-w-0 items-center gap-1.5">
                   <input
                     type="radio"
                     name="conflict"
@@ -407,7 +407,7 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
                     : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'
                 }`}
               >
-                <div className="flex items-center gap-1.5">
+                <div className="flex min-w-0 items-center gap-1.5">
                   <input
                     type="radio"
                     name="conflict"
@@ -482,21 +482,21 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
           {/* Import Preview Table */}
           {importPreview && importPreview.length > 0 && (
             <div className="space-y-3 pt-2 border-t border-zinc-800">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex flex-col items-start gap-2 text-xs sm:flex-row sm:items-center sm:justify-between">
                 <span className="font-semibold text-zinc-200">
                   Preview ({importPreview.length} records detected)
                 </span>
                 <button
                   id="btn-commit-import"
                   onClick={handleCommitImport}
-                  className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-500 transition"
+                  className="w-full rounded-md bg-indigo-600 px-3 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-indigo-500 sm:w-auto sm:py-1.5"
                 >
                   Confirm & Import
                 </button>
               </div>
 
-              <div className="max-h-48 overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-950">
-                <table className="w-full text-left text-[11px]">
+              <div className="max-h-48 overflow-x-auto overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-950">
+                <table className="w-full min-w-[32rem] text-left text-[11px]">
                   <thead className="sticky top-0 bg-zinc-900 text-zinc-400 border-b border-zinc-800">
                     <tr>
                       <th className="px-3 py-2">Domain</th>
@@ -508,8 +508,8 @@ export const ImportExportView: React.FC<ImportExportViewProps> = ({
                   <tbody className="divide-y divide-zinc-800/50">
                     {importPreview.slice(0, 10).map((d, i) => (
                       <tr key={i} className="hover:bg-zinc-900/50">
-                        <td className="px-3 py-1.5 font-medium text-zinc-200">{d.name}</td>
-                        <td className="px-3 py-1.5 text-zinc-400">{d.registrar}</td>
+                        <td className="max-w-xs break-all px-3 py-1.5 font-medium text-zinc-200">{d.name}</td>
+                        <td className="max-w-xs break-words px-3 py-1.5 text-zinc-400">{d.registrar}</td>
                         <td className="px-3 py-1.5 text-zinc-400">{d.renewalDate}</td>
                         <td className="px-3 py-1.5 text-right font-mono text-zinc-300">
                           {d.cost !== null && d.cost !== undefined

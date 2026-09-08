@@ -82,12 +82,12 @@ export const CalendarTasksModal: React.FC<CalendarTasksModalProps> = ({
   return (
     <div
       id="calendar-tasks-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs"
+      className="fixed left-0 top-0 z-50 flex h-[100dvh] w-[100dvw] items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-xs"
       onClick={onClose}
     >
       <div
         id="calendar-tasks-content"
-        className="w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl"
+        className="my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900 p-4 shadow-2xl sm:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
@@ -148,21 +148,21 @@ export const CalendarTasksModal: React.FC<CalendarTasksModalProps> = ({
         ) : (
           <div className="space-y-4">
             <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-3 text-xs space-y-1.5">
-              <div className="flex justify-between">
+              <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1">
                 <span className="text-zinc-400">Target Domain:</span>
-                <span className="font-semibold text-zinc-200">{domain.name}</span>
+                <span className="min-w-0 max-w-full break-all text-right font-semibold text-zinc-200">{domain.name}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1">
                 <span className="text-zinc-400">Registrar:</span>
-                <span className="text-zinc-200">{domain.registrar}</span>
+                <span className="min-w-0 max-w-full break-words text-right text-zinc-200">{domain.registrar}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1">
                 <span className="text-zinc-400">Renewal Date:</span>
-                <span className="font-mono text-zinc-200">{formatDate(domain.renewalDate)}</span>
+                <span className="min-w-0 max-w-full break-words text-right font-mono text-zinc-200">{formatDate(domain.renewalDate)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1">
                 <span className="text-zinc-400">Renewal Cost:</span>
-                <span className="font-medium text-emerald-400">
+                <span className="min-w-0 max-w-full break-words text-right font-medium text-emerald-400">
                   {formatCurrency(domain.cost, domain.currency)}
                 </span>
               </div>
@@ -174,12 +174,12 @@ export const CalendarTasksModal: React.FC<CalendarTasksModalProps> = ({
                 : 'This will add a renewal task to your Google Tasks list with the renewal date as the due date.'}
             </p>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-800">
+            <div className="flex flex-col-reverse items-stretch gap-2 border-t border-zinc-800 pt-2 sm:flex-row sm:items-center sm:justify-end">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={loading}
-                className="rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-zinc-700 transition"
+                className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-300 transition hover:bg-zinc-700 sm:w-auto sm:py-1.5"
               >
                 Cancel
               </button>
@@ -188,7 +188,7 @@ export const CalendarTasksModal: React.FC<CalendarTasksModalProps> = ({
                 type="button"
                 onClick={handleAction}
                 disabled={loading}
-                className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-4 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-500 transition disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-1.5 rounded-md bg-indigo-600 px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50 sm:w-auto sm:py-1.5"
               >
                 {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 <span>{isCalendar ? 'Create Calendar Event' : 'Create Google Task'}</span>

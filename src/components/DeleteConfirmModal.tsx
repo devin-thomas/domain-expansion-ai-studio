@@ -20,12 +20,12 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   return (
     <div
       id="delete-confirm-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs"
+      className="fixed left-0 top-0 z-50 flex h-[100dvh] w-[100dvw] items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-xs"
       onClick={onCancel}
     >
       <div
         id="delete-confirm-content"
-        className="w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl"
+        className="my-auto w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-900 p-4 shadow-2xl sm:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 text-rose-400 mb-3">
@@ -40,16 +40,16 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
 
         <p className="text-xs text-zinc-300 leading-relaxed my-4">
           Are you sure you want to permanently delete the domain{' '}
-          <strong className="text-zinc-100 font-mono font-semibold">{domain.name}</strong> from
+          <strong className="break-all font-mono font-semibold text-zinc-100">{domain.name}</strong> from
           your Domain Expansion records?
         </p>
 
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-800">
+        <div className="flex flex-col-reverse items-stretch gap-2 border-t border-zinc-800 pt-2 sm:flex-row sm:items-center sm:justify-end">
           <button
             id="btn-cancel-delete"
             type="button"
             onClick={onCancel}
-            className="rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-zinc-700 transition"
+            className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-300 transition hover:bg-zinc-700 sm:w-auto sm:py-1.5"
           >
             Cancel
           </button>
@@ -57,7 +57,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
             id="btn-confirm-delete"
             type="button"
             onClick={onConfirm}
-            className="rounded-md bg-rose-600 px-4 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-rose-500 transition"
+            className="w-full rounded-md bg-rose-600 px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-rose-500 sm:w-auto sm:py-1.5"
           >
             Delete Domain
           </button>

@@ -95,7 +95,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           id="metric-next-renewal"
           className="rounded-xl border border-zinc-800 bg-zinc-900/70 p-4 transition hover:border-zinc-700"
         >
-          <div className="flex items-center justify-between text-xs text-zinc-400">
+          <div className="flex min-w-0 items-center justify-between gap-2 text-xs text-zinc-400">
             <span className="font-medium text-zinc-400">Next Renewal</span>
             <Clock className="h-3.5 w-3.5 text-indigo-400" />
           </div>
@@ -103,13 +103,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="mt-2">
               <div className="flex items-baseline justify-between gap-2">
                 <span
-                  className="truncate text-base font-semibold text-zinc-100 hover:text-indigo-400 cursor-pointer"
+                  className="min-w-0 truncate text-base font-semibold text-zinc-100 hover:text-indigo-400 cursor-pointer"
                   onClick={() => onSelectDomain(nextDomain)}
                 >
                   {nextDomain.name}
                 </span>
                 <span
-                  className={`text-xs font-medium px-2 py-0.5 rounded ${
+                  className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded ${
                     nextDaysUntil <= 7
                       ? 'bg-rose-950/60 text-rose-300 border border-rose-800/40'
                       : nextDaysUntil <= 30
@@ -238,7 +238,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           className="rounded-xl border border-indigo-900/40 bg-gradient-to-r from-indigo-950/20 via-zinc-900/80 to-zinc-900/80 p-5 shadow-sm"
         >
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="space-y-1.5">
+            <div className="min-w-0 space-y-1.5">
               <div className="flex items-center gap-2">
                 <span className="rounded bg-indigo-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-indigo-300">
                   Next To Expire / Renew
@@ -252,29 +252,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </span>
               </div>
               <h3
-                className="text-xl font-bold text-zinc-100 cursor-pointer hover:text-indigo-400 transition"
+                className="break-all text-xl font-bold text-zinc-100 cursor-pointer hover:text-indigo-400 transition"
                 onClick={() => onSelectDomain(nextDomain)}
               >
                 {nextDomain.name}
               </h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-300">
-                <div>
+                <div className="min-w-0 break-words">
                   <span className="text-zinc-400">Registrar:</span>{' '}
                   <span className="font-medium text-zinc-200">{nextDomain.registrar}</span>
                 </div>
-                <div>
+                <div className="min-w-0 break-words">
                   <span className="text-zinc-400">Renewal Date:</span>{' '}
                   <span className="font-medium text-zinc-200">
                     {formatDate(nextDomain.renewalDate)}
                   </span>
                 </div>
-                <div>
+                <div className="min-w-0 break-words">
                   <span className="text-zinc-400">Cost:</span>{' '}
                   <span className="font-medium text-emerald-400">
                     {formatCurrency(nextDomain.cost, nextDomain.currency)}
                   </span>
                 </div>
-                <div>
+                <div className="min-w-0 break-words">
                   <span className="text-zinc-400">Intention:</span>{' '}
                   <span
                     className={`font-medium ${
@@ -370,7 +370,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   key={domain.id}
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-zinc-800/30 transition"
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex min-w-0 items-start gap-3">
                     <div
                       className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-xs font-bold ${
                         urgency.level === 'critical' || urgency.level === 'overdue'
@@ -380,10 +380,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     >
                       {days <= 0 ? '!' : `${days}d`}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span
-                          className="font-medium text-sm text-zinc-100 hover:text-indigo-400 cursor-pointer transition"
+                          className="min-w-0 max-w-full break-all text-left font-medium text-sm text-zinc-100 hover:text-indigo-400 cursor-pointer transition"
                           onClick={() => onSelectDomain(domain)}
                         >
                           {domain.name}
@@ -398,22 +398,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           {domain.renewalIntention}
                         </span>
                         {domain.autoRenew && (
-                          <span className="text-[10px] text-emerald-400/80 bg-emerald-950/30 border border-emerald-900/30 px-1.5 rounded">
+                          <span className="shrink-0 rounded border border-emerald-900/30 bg-emerald-950/30 px-1.5 text-[10px] text-emerald-400/80">
                             Auto
                           </span>
                         )}
                       </div>
-                      <div className="mt-0.5 flex items-center gap-3 text-xs text-zinc-400">
-                        <span>{domain.registrar}</span>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-400">
+                        <span className="break-words">{domain.registrar}</span>
                         <span>•</span>
                         <span>Renews: {formatDate(domain.renewalDate)}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-4 pl-10 sm:pl-0">
-                    <div className="text-right">
-                      <div className="text-sm font-semibold text-zinc-200">
+                  <div className="flex min-w-0 items-center justify-between gap-4 pl-10 sm:justify-end sm:pl-0">
+                    <div className="min-w-0 text-right">
+                      <div className="break-words text-sm font-semibold text-zinc-200">
                         {formatCurrency(domain.cost, domain.currency)}
                       </div>
                       <div className="text-[10px] text-zinc-400">

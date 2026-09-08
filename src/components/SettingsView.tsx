@@ -178,26 +178,26 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
 
         <div className="rounded-lg border border-zinc-800 bg-zinc-950/60 p-4 space-y-3 text-xs text-zinc-300 leading-relaxed">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-zinc-400">Database Architecture:</span>
-            <span className="font-semibold text-emerald-400">No Central User Database</span>
+            <span className="max-w-full break-words font-semibold text-left text-emerald-400 sm:text-right">No Central User Database</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-zinc-400">Storage Target:</span>
-            <span className="font-mono text-zinc-200">Google Drive appDataFolder</span>
+            <span className="max-w-full break-words font-mono text-left text-zinc-200 sm:text-right">Google Drive appDataFolder</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-zinc-400">File Signature:</span>
-            <span className="font-mono text-zinc-200">domain-expansion.json</span>
+            <span className="max-w-full break-all font-mono text-left text-zinc-200 sm:text-right">domain-expansion.json</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-zinc-400">Token Security:</span>
-            <span className="text-zinc-200">In-memory ephemeral cache (Never in localStorage)</span>
+            <span className="max-w-full break-words text-left text-zinc-200 sm:text-right">In-memory ephemeral cache (Never in localStorage)</span>
           </div>
           {lastSyncedAt && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-zinc-400">Last Synced to Drive:</span>
-              <span className="font-mono text-zinc-200">{new Date(lastSyncedAt).toLocaleTimeString()}</span>
+              <span className="max-w-full break-words font-mono text-left text-zinc-200 sm:text-right">{new Date(lastSyncedAt).toLocaleTimeString()}</span>
             </div>
           )}
         </div>

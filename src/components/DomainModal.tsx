@@ -184,19 +184,19 @@ export const DomainModal: React.FC<DomainModalProps> = ({
   return (
     <div
       id="domain-modal-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs"
+      className="fixed left-0 top-0 z-50 flex h-[100dvh] w-[100dvw] items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-xs"
       onClick={onClose}
     >
       <div
         id="domain-modal-content"
-        className="w-full max-w-lg rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl overflow-hidden"
+        className="my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-3.5 bg-zinc-950/50">
-          <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center justify-between border-b border-zinc-800 bg-zinc-950/50 px-4 py-3.5 sm:px-5">
+          <div className="flex min-w-0 items-center gap-2">
             <Globe className="h-4 w-4 text-indigo-400" />
-            <h3 className="text-sm font-semibold text-zinc-100">
+            <h3 className="min-w-0 break-words text-sm font-semibold text-zinc-100">
               {currentMode === 'add'
                 ? 'Add Domain'
                 : currentMode === 'edit'
@@ -204,7 +204,7 @@ export const DomainModal: React.FC<DomainModalProps> = ({
                 : `Domain: ${initialDomain?.name}`}
             </h3>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {isReadOnly && (
               <button
                 type="button"
@@ -215,7 +215,9 @@ export const DomainModal: React.FC<DomainModalProps> = ({
               </button>
             )}
             <button
+              type="button"
               onClick={onClose}
+              aria-label="Close domain dialog"
               className="rounded p-1 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition"
             >
               <X className="h-4 w-4" />
@@ -224,7 +226,7 @@ export const DomainModal: React.FC<DomainModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4 sm:p-5">
           {error && (
             <div className="flex items-center gap-2 rounded-md border border-rose-900/50 bg-rose-950/40 p-3 text-xs text-rose-300">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -286,7 +288,7 @@ export const DomainModal: React.FC<DomainModalProps> = ({
           </div>
 
           {/* Ownership & Status */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-zinc-300 mb-1">
                 Ownership
@@ -322,7 +324,7 @@ export const DomainModal: React.FC<DomainModalProps> = ({
           </div>
 
           {/* Renewal Date & Registration Date */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-zinc-300 mb-1">
                 Renewal Date <span className="text-rose-400">*</span>
@@ -354,7 +356,7 @@ export const DomainModal: React.FC<DomainModalProps> = ({
           </div>
 
           {/* Cost & Currency */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-zinc-300 mb-1">
                 Renewal Cost
@@ -407,7 +409,7 @@ export const DomainModal: React.FC<DomainModalProps> = ({
           )}
 
           {/* Auto Renew & Renewal Intention */}
-          <div className="grid grid-cols-2 gap-3 pt-1">
+          <div className="grid grid-cols-1 gap-3 pt-1 sm:grid-cols-2">
             <div className="flex items-center gap-2 pt-2">
               <input
                 id="checkbox-domain-auto-renew"
@@ -460,11 +462,11 @@ export const DomainModal: React.FC<DomainModalProps> = ({
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
+          <div className="flex flex-col-reverse items-stretch gap-2 border-t border-zinc-800 pt-3 sm:flex-row sm:items-center sm:justify-end">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-zinc-700 transition"
+              className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-300 transition hover:bg-zinc-700 sm:w-auto sm:py-1.5"
             >
               {isReadOnly ? 'Close' : 'Cancel'}
             </button>
@@ -473,7 +475,7 @@ export const DomainModal: React.FC<DomainModalProps> = ({
               <button
                 id="btn-save-domain"
                 type="submit"
-                className="rounded-md bg-indigo-600 px-4 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-500 transition"
+                className="w-full rounded-md bg-indigo-600 px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-indigo-500 sm:w-auto sm:py-1.5"
               >
                 {currentMode === 'add' ? 'Add Domain' : 'Save Changes'}
               </button>

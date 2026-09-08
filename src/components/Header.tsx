@@ -39,29 +39,29 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3 lg:flex-nowrap lg:gap-0 lg:px-6">
         {/* Left: Brand + Sync status */}
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-4">
           <div
             id="brand-logo"
-            className="flex cursor-pointer items-center gap-2 text-zinc-100 transition hover:opacity-90"
+            className="flex min-w-0 cursor-pointer items-center gap-2 text-zinc-100 transition hover:opacity-90"
             onClick={() => onSelectTab('dashboard')}
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
               <Globe className="h-4 w-4" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold tracking-tight text-zinc-100">
+            <div className="flex min-w-0 flex-col">
+              <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-zinc-100">
                 Domain Expansion
               </span>
-              <span className="text-[10px] text-zinc-400">
+              <span className="whitespace-nowrap text-[10px] text-zinc-400">
                 {domainCount} {domainCount === 1 ? 'domain' : 'domains'} tracked
               </span>
             </div>
           </div>
 
           {/* Sync indicator */}
-          <div className="hidden items-center sm:flex">
+          <div className="hidden items-center lg:flex">
             {syncState === 'syncing' && (
               <div
                 id="sync-indicator-syncing"
@@ -105,59 +105,59 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Center: Navigation Tabs */}
-        <nav className="flex items-center gap-1">
+        <nav className="order-3 flex w-full items-center justify-between gap-1 border-t border-zinc-900/80 pt-2 lg:order-none lg:w-auto lg:border-t-0 lg:pt-0">
           <button
             id="nav-tab-dashboard"
             onClick={() => onSelectTab('dashboard')}
-            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition lg:flex-none lg:justify-start lg:px-3 ${
               currentTab === 'dashboard'
                 ? 'bg-zinc-800 text-zinc-100 shadow-sm'
                 : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
             }`}
           >
             <LayoutDashboard className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Dashboard</span>
+            <span className="hidden lg:inline">Dashboard</span>
           </button>
           <button
             id="nav-tab-domains"
             onClick={() => onSelectTab('domains')}
-            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition lg:flex-none lg:justify-start lg:px-3 ${
               currentTab === 'domains'
                 ? 'bg-zinc-800 text-zinc-100 shadow-sm'
                 : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
             }`}
           >
             <ListFilter className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Domains</span>
+            <span className="hidden lg:inline">Domains</span>
           </button>
           <button
             id="nav-tab-import-export"
             onClick={() => onSelectTab('import-export')}
-            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition lg:flex-none lg:justify-start lg:px-3 ${
               currentTab === 'import-export'
                 ? 'bg-zinc-800 text-zinc-100 shadow-sm'
                 : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
             }`}
           >
             <FileSpreadsheet className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Import / Export</span>
+            <span className="hidden lg:inline">Import / Export</span>
           </button>
           <button
             id="nav-tab-settings"
             onClick={() => onSelectTab('settings')}
-            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition lg:flex-none lg:justify-start lg:px-3 ${
               currentTab === 'settings'
                 ? 'bg-zinc-800 text-zinc-100 shadow-sm'
                 : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
             }`}
           >
             <SettingsIcon className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Settings</span>
+            <span className="hidden lg:inline">Settings</span>
           </button>
         </nav>
 
         {/* Right: Add Domain + Auth controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <button
             id="btn-quick-add-domain"
             onClick={onOpenAddModal}
@@ -186,7 +186,7 @@ export const Header: React.FC<HeaderProps> = ({
                     {(user.email || 'U').charAt(0).toUpperCase()}
                   </div>
                 )}
-                <span className="hidden max-w-[110px] truncate text-xs text-zinc-300 md:inline">
+                <span className="hidden max-w-[110px] truncate text-xs text-zinc-300 lg:inline">
                   {user.email || user.displayName}
                 </span>
                 <button
@@ -224,7 +224,7 @@ export const Header: React.FC<HeaderProps> = ({
                   d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
                 />
               </svg>
-              <span className="hidden sm:inline">Connect Google</span>
+              <span className="hidden lg:inline">Connect Google</span>
             </button>
           )}
         </div>

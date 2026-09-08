@@ -76,6 +76,11 @@ export default function App() {
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
 
+  // Keep each view's first content block clear of the sticky header after navigation.
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [currentTab]);
+
   // Modals state
   const [domainModalOpen, setDomainModalOpen] = useState(false);
   const [domainModalMode, setDomainModalMode] = useState<'add' | 'edit' | 'view'>('add');
@@ -365,7 +370,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 px-4 py-6 sm:px-6 max-w-7xl mx-auto w-full">
+      <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 max-w-7xl mx-auto w-full">
         {currentTab === 'dashboard' && (
           <DashboardView
             domains={storageData.domains}
