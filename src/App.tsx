@@ -7,14 +7,12 @@ import { SettingsView } from './components/SettingsView';
 import { DomainModal } from './components/DomainModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 import { CalendarTasksModal } from './components/CalendarTasksModal';
-import { GmailDiscoveryModal } from './components/GmailDiscoveryModal';
 import {
   DomainRecord,
   AppSettings,
   StorageData,
   GoogleAuthUser,
   SyncState,
-  CandidateDomain,
   SupportedCurrency,
 } from './types';
 import {
@@ -89,8 +87,6 @@ export default function App() {
   const [calendarTasksModalOpen, setCalendarTasksModalOpen] = useState(false);
   const [calendarTasksMode, setCalendarTasksMode] = useState<'calendar' | 'tasks'>('calendar');
   const [domainForCalendarTasks, setDomainForCalendarTasks] = useState<DomainRecord | null>(null);
-
-  const [gmailModalOpen, setGmailModalOpen] = useState(false);
 
   // Ref to hold current storageData to avoid sync effect loops
   const storageDataRef = useRef(storageData);
@@ -289,61 +285,6 @@ export default function App() {
     setCurrentTab('domains');
   };
 
-  // Gmail candidate commit handler
-  const handleImportGmailCandidates = (candidates: CandidateDomain[]) => {
-    commitStorageUpdate((prev) => {
-      const currentMap = new Map<string, DomainRecord>();
-      prev.domains.forEach((d) => currentMap.set(d.name.toLowerCase(), { ...d }));
-
-      for (const cand of candidates) {
-        const norm = normalizeDomain(cand.name);
-        if (!norm) continue;
-
-        const existing = currentMap.get(norm);
-        if (existing) {
-          // Update missing info
-          currentMap.set(norm, {
-            ...existing,
-            registrar:
-              existing.registrar === 'Unknown' && cand.registrar !== 'Unknown'
-                ? cand.registrar
-                : existing.registrar,
-            renewalDate: cand.renewalDate || existing.renewalDate,
-            cost: existing.cost === null && cand.cost !== null ? cand.cost : existing.cost,
-            currency: cand.currency || existing.currency,
-            updatedAt: new Date().toISOString(),
-          });
-        } else {
-          // Add as new
-          const newDoc: DomainRecord = {
-            id: 'dom_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36),
-            name: norm,
-            registrar: cand.registrar || 'Unknown',
-            ownership: 'Owned',
-            status: 'Active',
-            registrationDate: cand.registrationDate || null,
-            renewalDate:
-              cand.renewalDate ||
-              new Date(Date.now() + 365 * 86400000).toISOString().split('T')[0],
-            cost: cand.cost,
-            currency: cand.currency || prev.settings.defaultCurrency,
-            autoRenew: false,
-            renewalIntention: 'Renew',
-            notes: cand.sourceSnippet ? `Discovered from Gmail: ${cand.sourceSnippet}` : '',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-          currentMap.set(norm, newDoc);
-        }
-      }
-
-      return {
-        ...prev,
-        domains: Array.from(currentMap.values()),
-      };
-    });
-  };
-
   // Bulk import completed from Import/Export view
   const handleImportCompleted = (updatedDomains: DomainRecord[]) => {
     commitStorageUpdate((prev) => ({
@@ -470,7 +411,6 @@ export default function App() {
             lastSyncedAt={lastSyncedAt}
             onSignOut={handleSignOut}
             onForceSync={() => triggerDriveSync(storageData)}
-            onOpenGmailDiscovery={() => setGmailModalOpen(true)}
             onResetAllData={handleResetAllData}
           />
         )}
@@ -516,15 +456,6 @@ export default function App() {
         onClose={() => setCalendarTasksModalOpen(false)}
         domain={domainForCalendarTasks}
         mode={calendarTasksMode}
-        onEnsureScope={handleEnsureScope}
-      />
-
-      {/* Gmail Domain Discovery Modal */}
-      <GmailDiscoveryModal
-        isOpen={gmailModalOpen}
-        onClose={() => setGmailModalOpen(false)}
-        existingDomains={storageData.domains}
-        onImportAccepted={handleImportGmailCandidates}
         onEnsureScope={handleEnsureScope}
       />
     </div>

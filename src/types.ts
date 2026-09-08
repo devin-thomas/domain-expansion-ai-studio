@@ -38,22 +38,6 @@ export interface StorageData {
 
 export type SyncState = 'idle' | 'syncing' | 'synced' | 'error' | 'offline';
 
-export interface CandidateDomain {
-  id: string;
-  name: string;
-  registrar: string | null;
-  registrationDate: string | null;
-  renewalDate: string | null;
-  cost: number | null;
-  currency: SupportedCurrency;
-  transactionType: string;
-  confidence: 'high' | 'medium' | 'low';
-  sourceSnippet?: string;
-  status: 'pending' | 'accepted' | 'ignored';
-  alreadyTracked?: boolean;
-  existingDomainId?: string;
-}
-
 export interface GoogleAuthUser {
   uid: string;
   email: string | null;

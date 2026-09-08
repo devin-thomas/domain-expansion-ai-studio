@@ -4,7 +4,6 @@ import {
   Shield,
   Clock,
   DollarSign,
-  Mail,
   Trash2,
   CheckCircle2,
   AlertTriangle,
@@ -22,7 +21,6 @@ interface SettingsViewProps {
   lastSyncedAt: string | null;
   onSignOut: () => void;
   onForceSync: () => void;
-  onOpenGmailDiscovery: () => void;
   onResetAllData: () => void;
 }
 
@@ -44,7 +42,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   lastSyncedAt,
   onSignOut,
   onForceSync,
-  onOpenGmailDiscovery,
   onResetAllData,
 }) => {
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
@@ -171,27 +168,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </p>
           )}
         </div>
-      </div>
-
-      {/* Advanced Discovery Tools */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/70 p-5 space-y-4">
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 text-indigo-400" />
-          <h3 className="text-sm font-semibold text-zinc-100">Gmail Domain Discovery</h3>
-        </div>
-        <p className="text-xs text-zinc-400 leading-relaxed max-w-xl">
-          Search your Gmail receipts and registrar confirmations to discover domains, costs, and renewal
-          dates. Discovered records are proposals and require your explicit review before being added.
-        </p>
-
-        <button
-          id="btn-settings-open-gmail"
-          onClick={onOpenGmailDiscovery}
-          className="flex items-center gap-1.5 rounded-md bg-zinc-800 border border-zinc-700 px-3.5 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-700 transition"
-        >
-          <Mail className="h-3.5 w-3.5 text-indigo-400" />
-          <span>Launch Gmail Discovery</span>
-        </button>
       </div>
 
       {/* Privacy Architecture & Storage Audit */}
