@@ -7,6 +7,7 @@ import { SettingsView } from './components/SettingsView';
 import { DomainModal } from './components/DomainModal';
 import { DeleteConfirmModal } from './components/DeleteConfirmModal';
 import { CalendarTasksModal } from './components/CalendarTasksModal';
+import { AuthErrorModal, AuthErrorInfo } from './components/AuthErrorModal';
 import {
   DomainRecord,
   AppSettings,
@@ -20,6 +21,8 @@ import {
   signInWithGoogle,
   signOutGoogle,
   requestAdditionalScope,
+  handleRedirectResult,
+  reconnectGoogleToken,
 } from './services/firebaseAuth';
 import {
   readFromDriveAppDataFolder,
@@ -75,6 +78,7 @@ export default function App() {
   const [syncState, setSyncState] = useState<SyncState>('offline');
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<AuthErrorInfo | null>(null);
 
   // Keep each view's first content block clear of the sticky header after navigation.
   useEffect(() => {
@@ -188,6 +192,24 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // Check for redirect sign-in result on page mount
+  useEffect(() => {
+    handleRedirectResult()
+      .then((res) => {
+        if (res?.user && res.token) {
+          setUser(res.user);
+          triggerDriveSync(storageDataRef.current);
+        }
+      })
+      .catch((err: any) => {
+        console.error('Redirect sign-in error:', err);
+        setAuthError({
+          code: err.code || 'auth/redirect-error',
+          message: err.message || 'Failed to complete Google redirect sign-in.',
+        });
+      });
+  }, [triggerDriveSync]);
+
   // Ensure Scope Handler (for incremental OAuth)
   const handleEnsureScope = async (scope: string): Promise<string> => {
     const token = await requestAdditionalScope(scope);
@@ -195,11 +217,43 @@ export default function App() {
   };
 
   // Sign In / Sign Out Handlers
-  const handleSignIn = async () => {
+  const handleSignIn = async (options?: { preferRedirect?: boolean }) => {
+    setAuthError(null);
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle(options);
+      if (result?.user && result.token) {
+        setUser(result.user);
+        triggerDriveSync(storageDataRef.current);
+      }
     } catch (err: any) {
-      alert(`Google Sign-In failed: ${err.message || err}`);
+      console.error('Google Sign-In error:', err);
+      if (err.code === 'auth/popup-closed-by-user') {
+        return;
+      }
+      setAuthError({
+        code: err.code || 'auth/unknown',
+        message: err.message || 'An unexpected error occurred during Google sign-in.',
+      });
+    }
+  };
+
+  const handleReconnectToken = async (preferRedirect = false) => {
+    setAuthError(null);
+    try {
+      const result = await reconnectGoogleToken(preferRedirect);
+      if (result?.user && result.token) {
+        setUser(result.user);
+        triggerDriveSync(storageDataRef.current);
+      }
+    } catch (err: any) {
+      console.error('Google reconnect token error:', err);
+      if (err.code === 'auth/popup-closed-by-user') {
+        return;
+      }
+      setAuthError({
+        code: err.code || 'auth/reconnect-failed',
+        message: err.message || 'Failed to reconnect Google Drive session.',
+      });
     }
   };
 
@@ -365,6 +419,7 @@ export default function App() {
         user={user}
         onSignIn={handleSignIn}
         onSignOut={handleSignOut}
+        onReconnect={() => handleReconnectToken(false)}
         onOpenAddModal={openAddModal}
         domainCount={storageData.domains.length}
       />
@@ -417,6 +472,8 @@ export default function App() {
             onSignOut={handleSignOut}
             onForceSync={() => triggerDriveSync(storageData)}
             onResetAllData={handleResetAllData}
+            onReconnectToken={() => handleReconnectToken(false)}
+            onSignIn={handleSignIn}
           />
         )}
       </main>
@@ -462,6 +519,15 @@ export default function App() {
         domain={domainForCalendarTasks}
         mode={calendarTasksMode}
         onEnsureScope={handleEnsureScope}
+      />
+
+      {/* Google Auth Error & Domain Authorization Modal */}
+      <AuthErrorModal
+        isOpen={Boolean(authError)}
+        error={authError}
+        onClose={() => setAuthError(null)}
+        onRetryPopup={() => handleSignIn({ preferRedirect: false })}
+        onRetryRedirect={() => handleSignIn({ preferRedirect: true })}
       />
     </div>
   );

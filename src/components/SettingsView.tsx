@@ -10,8 +10,10 @@ import {
   LogOut,
   RefreshCw,
   ExternalLink,
+  Globe,
 } from 'lucide-react';
 import { AppSettings, GoogleAuthUser, SupportedCurrency, SyncState } from '../types';
+import { currentFirebaseConfig } from '../services/firebaseAuth';
 
 interface SettingsViewProps {
   settings: AppSettings;
@@ -22,6 +24,8 @@ interface SettingsViewProps {
   onSignOut: () => void;
   onForceSync: () => void;
   onResetAllData: () => void;
+  onReconnectToken?: () => void;
+  onSignIn?: (options?: { preferRedirect?: boolean }) => void;
 }
 
 const SUPPORTED_CURRENCIES: { code: SupportedCurrency; name: string }[] = [
@@ -43,6 +47,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onSignOut,
   onForceSync,
   onResetAllData,
+  onReconnectToken,
+  onSignIn,
 }) => {
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [offsetsInput, setOffsetsInput] = useState(settings.reminderOffsets.join(', '));
@@ -191,8 +197,30 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <span className="max-w-full break-all font-mono text-left text-zinc-200 sm:text-right">domain-expansion.json</span>
           </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-zinc-400">Token Security:</span>
-            <span className="max-w-full break-words text-left text-zinc-200 sm:text-right">In-memory ephemeral cache (Never in localStorage)</span>
+            <span className="text-zinc-400">Token Status:</span>
+            <span className="max-w-full break-words text-left sm:text-right">
+              {user ? (
+                user.accessToken ? (
+                  <span className="text-emerald-400 font-medium">Active (In-memory ephemeral cache)</span>
+                ) : (
+                  <span className="text-amber-400 font-medium">Session refreshed (Reconnection required for Drive sync)</span>
+                )
+              ) : (
+                <span className="text-zinc-400">Not connected (Operating in local browser mode)</span>
+              )}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-zinc-400">Current Web Domain:</span>
+            <span className="max-w-full break-all font-mono text-left text-indigo-300 sm:text-right">
+              {typeof window !== 'undefined' ? window.location.hostname : 'localhost'}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-zinc-400">Firebase Project:</span>
+            <span className="max-w-full break-all font-mono text-left text-zinc-300 sm:text-right">
+              {currentFirebaseConfig.projectId}
+            </span>
           </div>
           {lastSyncedAt && (
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
@@ -202,12 +230,27 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           )}
         </div>
 
-        {user && (
+        {user ? (
           <div className="flex flex-wrap items-center gap-3 pt-2">
+            {!user.accessToken && onReconnectToken && (
+              <button
+                id="btn-settings-reconnect-token"
+                onClick={onReconnectToken}
+                className="flex items-center gap-1.5 rounded-md border border-amber-500/50 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-300 hover:bg-amber-500/20 transition"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+                <span>Reconnect Google Drive</span>
+              </button>
+            )}
             <button
               id="btn-settings-force-sync"
               onClick={onForceSync}
-              className="flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-700 transition"
+              disabled={!user.accessToken}
+              className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition ${
+                user.accessToken
+                  ? 'border-zinc-700 bg-zinc-800 text-zinc-200 hover:bg-zinc-700'
+                  : 'border-zinc-800 bg-zinc-900/50 text-zinc-500 cursor-not-allowed'
+              }`}
             >
               <RefreshCw className="h-3.5 w-3.5" />
               <span>Force Sync Now</span>
@@ -221,7 +264,23 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <span>Disconnect Google Account</span>
             </button>
           </div>
-        )}
+        ) : onSignIn ? (
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              onClick={() => onSignIn()}
+              className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition shadow-sm"
+            >
+              <span>Connect Google Drive</span>
+            </button>
+            <button
+              onClick={() => onSignIn({ preferRedirect: true })}
+              className="flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-zinc-700 transition"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              <span>Sign In with Redirect</span>
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {/* Danger Zone */}

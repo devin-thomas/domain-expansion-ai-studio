@@ -11,6 +11,7 @@ import {
   ListFilter,
   FileSpreadsheet,
   Settings as SettingsIcon,
+  ExternalLink,
 } from 'lucide-react';
 import { GoogleAuthUser, SyncState } from '../types';
 
@@ -20,8 +21,9 @@ interface HeaderProps {
   syncState: SyncState;
   syncErrorMessage?: string | null;
   user: GoogleAuthUser | null;
-  onSignIn: () => void;
+  onSignIn: (options?: { preferRedirect?: boolean }) => void;
   onSignOut: () => void;
+  onReconnect?: () => void;
   onOpenAddModal: () => void;
   domainCount: number;
 }
@@ -34,6 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
   user,
   onSignIn,
   onSignOut,
+  onReconnect,
   onOpenAddModal,
   domainCount,
 }) => {
@@ -169,10 +172,21 @@ export const Header: React.FC<HeaderProps> = ({
 
           {user ? (
             <div className="flex items-center gap-2 pl-1">
+              {!user.accessToken && onReconnect && (
+                <button
+                  id="btn-header-reconnect-drive"
+                  onClick={onReconnect}
+                  title="Session token expired or refreshed. Click to reconnect Google Drive sync."
+                  className="flex items-center gap-1 rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-300 hover:bg-amber-500/20 transition"
+                >
+                  <CloudAlert className="h-3.5 w-3.5 text-amber-400" />
+                  <span className="hidden sm:inline">Reconnect Drive</span>
+                </button>
+              )}
               <div
                 id="user-account-badge"
                 className="flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/80 px-2 py-1"
-                title={`Connected as ${user.email || user.displayName}`}
+                title={`Connected as ${user.email || user.displayName}${!user.accessToken ? ' (Offline: Reconnection required)' : ''}`}
               >
                 {user.photoURL ? (
                   <img
@@ -201,31 +215,43 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
           ) : (
-            <button
-              id="btn-header-sign-in"
-              onClick={onSignIn}
-              className="flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-900 px-2.5 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-800 transition"
-            >
-              <svg className="h-3.5 w-3.5" viewBox="0 0 48 48">
-                <path
-                  fill="#EA4335"
-                  d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-                />
-                <path
-                  fill="#4285F4"
-                  d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-                />
-              </svg>
-              <span className="hidden lg:inline">Connect Google</span>
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                id="btn-header-sign-in"
+                onClick={() => onSignIn()}
+                className="flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-900 px-2.5 py-1.5 text-xs font-medium text-zinc-200 hover:bg-zinc-800 transition"
+                title="Connect with Google (Popup)"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 48 48">
+                  <path
+                    fill="#EA4335"
+                    d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                  />
+                  <path
+                    fill="#4285F4"
+                    d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                  />
+                </svg>
+                <span className="hidden lg:inline">Connect Google</span>
+              </button>
+              <button
+                id="btn-header-sign-in-redirect"
+                onClick={() => onSignIn({ preferRedirect: true })}
+                className="hidden sm:flex items-center rounded-md border border-zinc-800 bg-zinc-900/60 p-1.5 text-xs text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition"
+                title="Sign in via Redirect (use if popup is blocked)"
+                aria-label="Sign in via Redirect"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+              </button>
+            </div>
           )}
         </div>
       </div>
